@@ -1,6 +1,7 @@
 package com.bank.onboarding.relationservice.services;
 
 import com.bank.onboarding.commonslib.persistence.services.CustomerRefRepoService;
+import com.bank.onboarding.commonslib.utils.kafka.models.CreateRelationEvent;
 import com.bank.onboarding.commonslib.utils.kafka.models.ErrorEvent;
 import com.bank.onboarding.commonslib.utils.kafka.EventSeDeserializer;
 import com.bank.onboarding.commonslib.utils.mappers.CustomerMapper;
@@ -28,11 +29,17 @@ public class KafkaConsumer {
     @KafkaListener(topics = "${spring.kafka.consumer.topic-name}",  groupId = "${spring.kafka.consumer.group-id}")
     public void consumeEvent(ConsumerRecord event){
         String eventValue = event.value().toString();
-        switch (event.key().toString()) {
+        String eventKey = event.key().toString();
+        switch (eventKey) {
             case "UPDATE_CUSTOMER_REF" -> {
                 CustomerRefDTO customerRefDTO = (CustomerRefDTO) eventSeDeserializer.deserialize(eventValue, CustomerRefDTO.class);
                 log.info("Event received to update Customer Ref with number {}", customerRefDTO.getCustomerNumber());
                 customerRefRepoService.saveCustomerRefDB(CustomerMapper.INSTANCE.toCustomerRef(customerRefDTO));
+            }
+            case "ADD_REL" -> {
+                CreateRelationEvent createRelationEvent = (CreateRelationEvent) eventSeDeserializer.deserialize(eventValue, CreateRelationEvent.class);
+                log.info("Event received to create relation for customer with number {}", createRelationEvent.getCustomerRefDTO().getCustomerNumber());
+                relationService.addCustomerRelation(createRelationEvent);
             }
             default -> {
                 ErrorEvent errorEvent = (ErrorEvent) eventSeDeserializer.deserialize(eventValue, ErrorEvent.class);
