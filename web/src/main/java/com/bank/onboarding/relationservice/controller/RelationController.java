@@ -1,7 +1,9 @@
 package com.bank.onboarding.relationservice.controller;
 
 import com.bank.onboarding.commonslib.persistence.exceptions.OnboardingException;
+import com.bank.onboarding.commonslib.utils.OnboardingUtils;
 import com.bank.onboarding.relationservice.services.RelationService;
+import feign.Request;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RelationController {
 
     private final RelationService relationService;
+    private final OnboardingUtils onboardingUtils;
 
     @DeleteMapping("/{relationId}")
     public ResponseEntity<?> deleteRelation(@PathVariable("relationId") String relationId){
@@ -24,7 +27,7 @@ public class RelationController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         catch(OnboardingException e ) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return onboardingUtils.buildResponseEntity(Request.HttpMethod.DELETE.name(), e.getMessage());
         }
     }
 }
