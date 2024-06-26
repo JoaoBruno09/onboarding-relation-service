@@ -1,9 +1,8 @@
 package com.bank.onboarding.relationservice.services;
 
 import com.bank.onboarding.commonslib.persistence.services.CustomerRefRepoService;
-import com.bank.onboarding.commonslib.utils.kafka.models.CreateRelationEvent;
-import com.bank.onboarding.commonslib.utils.kafka.models.ErrorEvent;
 import com.bank.onboarding.commonslib.utils.kafka.EventSeDeserializer;
+import com.bank.onboarding.commonslib.utils.kafka.models.CreateRelationEvent;
 import com.bank.onboarding.commonslib.utils.mappers.CustomerMapper;
 import com.bank.onboarding.commonslib.web.dtos.customer.CustomerRefDTO;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +13,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.util.backoff.FixedBackOff;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,11 +37,6 @@ public class KafkaConsumer {
                 CreateRelationEvent createRelationEvent = (CreateRelationEvent) eventSeDeserializer.deserialize(eventValue, CreateRelationEvent.class);
                 log.info("Event received to create relation for customer with number {}", createRelationEvent.getCustomerRefDTO().getCustomerNumber());
                 relationService.addCustomerRelation(createRelationEvent);
-            }
-            default -> {
-                ErrorEvent errorEvent = (ErrorEvent) eventSeDeserializer.deserialize(eventValue, ErrorEvent.class);
-                log.info("Error event {} received for customer number {}", errorEvent, Optional.ofNullable(errorEvent.getCustomerRefDTO()).map(CustomerRefDTO::getCustomerNumber).orElse(""));
-                relationService.handleErrorEvent(errorEvent);
             }
         }
     }
