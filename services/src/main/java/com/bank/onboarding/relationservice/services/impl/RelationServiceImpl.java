@@ -1,5 +1,6 @@
 package com.bank.onboarding.relationservice.services.impl;
 
+import com.bank.onboarding.commonslib.persistence.enums.RelationType;
 import com.bank.onboarding.commonslib.persistence.exceptions.OnboardingException;
 import com.bank.onboarding.commonslib.persistence.models.Relation;
 import com.bank.onboarding.commonslib.persistence.services.RelationRepoService;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Optional;
 
 import static com.bank.onboarding.commonslib.persistence.constants.OnboardingConstants.RELATION_TYPES;
