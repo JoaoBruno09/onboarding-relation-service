@@ -73,11 +73,11 @@ class RelationControllerUnitTests {
 
     @Test
     void deleteRelationTest() throws Exception{
-        mockMvc.perform(delete("/relation/R123456789")
+        mockMvc.perform(delete("/relations/R123456789")
                         .header("Authorization", "Bearer " + token)
                         .header("X-Onboarding-Client-Id", clientId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 }

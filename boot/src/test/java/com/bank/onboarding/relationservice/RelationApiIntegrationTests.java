@@ -62,7 +62,7 @@ class RelationApiIntegrationTests {
     }
 
     private String createURLWithPort() {
-        return "http://localhost:" + port + "/relation/";
+        return "http://localhost:" + port + "/relations/";
     }
 
     private String insertRelationDB() {
@@ -78,7 +78,7 @@ class RelationApiIntegrationTests {
         ResponseEntity<?> response = restTemplate.exchange(
                 createURLWithPort() + relationId, HttpMethod.DELETE, entity, new ParameterizedTypeReference<>(){});
 
-        assertEquals(response.getStatusCode(), HttpStatusCode.valueOf(200));
+        assertEquals(response.getStatusCode(), HttpStatusCode.valueOf(204));
         assertTrue(relationRepository.findById(relationId).isEmpty());
     }
 

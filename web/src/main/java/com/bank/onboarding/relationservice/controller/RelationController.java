@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("relation")
+@RequestMapping("relations")
 @AllArgsConstructor
 public class RelationController {
 
@@ -24,7 +24,7 @@ public class RelationController {
     public ResponseEntity<?> deleteRelation(@PathVariable("relationId") String relationId){
         try {
             relationService.deleteRelation(relationId);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         catch(OnboardingException e ) {
             return onboardingUtils.buildResponseEntity(Request.HttpMethod.DELETE.name(), e.getMessage());
