@@ -27,17 +27,10 @@ public class KafkaConsumer {
     public void consumeEvent(ConsumerRecord event){
         String eventValue = event.value().toString();
         String eventKey = event.key().toString();
-        switch (eventKey) {
-            case "UPDATE_CUSTOMER_REF" -> {
-                CustomerRefDTO customerRefDTO = (CustomerRefDTO) eventSeDeserializer.deserialize(eventValue, CustomerRefDTO.class);
-                log.info("Event received to update Customer Ref with number {}", customerRefDTO.getCustomerNumber());
-                customerRefRepoService.saveCustomerRefDB(CustomerMapper.INSTANCE.toCustomerRef(customerRefDTO));
-            }
-            case "ADD_REL" -> {
-                CreateRelationEvent createRelationEvent = (CreateRelationEvent) eventSeDeserializer.deserialize(eventValue, CreateRelationEvent.class);
-                log.info("Event received to create relation for customer with number {}", createRelationEvent.getCustomerRefDTO().getCustomerNumber());
-                relationService.addCustomerRelation(createRelationEvent);
-            }
+        if (eventKey.equals("ADD_REL")) {
+            CreateRelationEvent createRelationEvent = (CreateRelationEvent) eventSeDeserializer.deserialize(eventValue, CreateRelationEvent.class);
+            log.info("Event received to create relation for customer with number {}", createRelationEvent.getCustomerRefDTO().getCustomerNumber());
+            relationService.addCustomerRelation(createRelationEvent);
         }
     }
 
